@@ -53,7 +53,7 @@ const Input = mentionByTag[0] ? mentionByTag[0] : q ? numberQuery : false
 const qtod = m.quoted? "true":"false"
 const id = '919938770375@s.whatsapp.net'
 const owner = ["919938770375"];
-const thinking = await client.sendMessage(m.chat, { text: 'Thinking...' }); 
+//const thinking = await client.sendMessage(m.chat, { text: 'Thinking...' }); 
 const botname = process.env.BOT_NAME;
 const owner_name = process.env.OWNER_NAME;
 const mentionUser = [...new Set([...(m.mentionedJid || []), ...(m.quoted ? [m.quoted.sender] : [])])]
@@ -329,6 +329,7 @@ break;
 
  case 'bard': 
    if (!text) throw `*Chat With Bard AI*\n\n*𝙴xample usage*\n*◉ ${prefix + command} Hello*\n*◉ ${prefix + command} write a hello world program in python*`;  
+ const thinking = await client.sendMessage(m.chat, { text: 'Thinking...' }); 
  const MODEL_NAME = "models/chat-bison-001"; 
  const API_KEY = process.env.API_KEY; 
   
@@ -547,7 +548,9 @@ case 'bug': case 'request': case 'report': {
         break;
 
   
-          case "ai": case "gpt":   
+case "ai": case "gpt":   
+         const think = await client.sendMessage(m.chat, { text: 'Thinking...' }); 
+
            try {  
               if (!process.env.OPENAI_API_KEY) return reply("Aabe Api key to dal de");  
               if (!text) return reply(`*Chat With ChatGPT*\n\n*𝙴xample usage*\n*◉ ${prefix + command} Hello*\n*◉ ${prefix + command} write a hello world program in python*`);  
@@ -564,7 +567,7 @@ case 'bug': case 'request': case 'report': {
            // m.reply(`${response.data.choices[0].message.content}`);
          await client.relayMessage(m.chat, {
             protocolMessage: {
-             key: thinking.key,
+             key: think.key,
              type: 14,
              editedMessage: {
           conversation: response.data.choices[0].message.content
