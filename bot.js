@@ -53,8 +53,8 @@ const Input = mentionByTag[0] ? mentionByTag[0] : q ? numberQuery : false
 const qtod = m.quoted? "true":"false"
 
 //const thinking = await client.sendMessage(m.chat, { text: 'Thinking...' }); 
-const botname = process.env.BOT_NAME;
-const owner_name = process.env.OWNER_NAME;
+const botname = process.env.BOT_NAME || 'GSS Botwa'
+const owner_name = process.env.OWNER_NAME || 'Goutam'
 const mentionUser = [...new Set([...(m.mentionedJid || []), ...(m.quoted ? [m.quoted.sender] : [])])]
 
 
@@ -145,13 +145,13 @@ for (let i = 0; i < goutamload.length; i++) {
 }}  
   
 
-if (process.env.REACODING === 'true' && command) {
+if (process.env.REACODING || 'true' === 'true' && command) {
 client.sendPresenceUpdate('recording', from)
 }
-if (process.env.AUTO_READ === 'true' && command) {
+if (process.env.AUTO_READ || 'true' === 'true' && command) {
 client.readMessages([m.key])
 }
-if (process.env.ALWAYS_ONLINE === 'true') { 
+if (process.env.ALWAYS_ONLINE || 'true' === 'true') { 
   client.sendPresenceUpdate('available', m.chat) 
 }
 else {
