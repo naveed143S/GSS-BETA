@@ -51,6 +51,7 @@ const numberQuery = text.replace(new RegExp("[()+-/ +/]", "gi"), "") + "@s.whats
 const mentionByTag = m.mtype == "extendedTextMessage" && m.message.extendedTextMessage.contextInfo != null ? m.message.extendedTextMessage.contextInfo.mentionedJid : []
 const Input = mentionByTag[0] ? mentionByTag[0] : q ? numberQuery : false
 const qtod = m.quoted? "true":"false"
+const owner = ["919938770375"];
 
 //const thinking = await client.sendMessage(m.chat, { text: 'Thinking...' }); 
 const botname = process.env.BOT_NAME || 'GSS Botwa'
