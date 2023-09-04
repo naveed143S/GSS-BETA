@@ -366,14 +366,11 @@ await client.sendMessage(owner + "@s.whatsapp.net", {
 });
 setInterval(setBio, 10000);
 
- /*     client.sendMessage(owner + "@s.whatsapp.net", {
-        text: `ChatGPT Sucsessfully Connected to Server!\n${donet}`,
-      }); */
       
-    }
+}
     // console.log('Connected...', update)
     
-  });
+});
 
   client.ev.on("creds.update", saveCreds);
 
