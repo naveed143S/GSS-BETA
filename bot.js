@@ -329,7 +329,6 @@ break;
 
  case 'bard': 
    if (!text) throw `*Chat With Bard AI*\n\n*𝙴xample usage*\n*◉ ${prefix + command} Hello*\n*◉ ${prefix + command} write a hello world program in python*`;  
- const thinking = await client.sendMessage(m.chat, { text: 'Thinking...' }); 
  const MODEL_NAME = "models/chat-bison-001"; 
  const API_KEY = process.env.API_KEY; 
   
@@ -549,8 +548,7 @@ case 'bug': case 'request': case 'report': {
 
   
           case "ai": case "gpt":   
-            const think = await client.sendMessage(m.chat, { text: 'Thinking...' }); 
-            try {  
+           try {  
               if (!process.env.OPENAI_API_KEY) return reply("Aabe Api key to dal de");  
               if (!text) return reply(`*Chat With ChatGPT*\n\n*𝙴xample usage*\n*◉ ${prefix + command} Hello*\n*◉ ${prefix + command} write a hello world program in python*`);  
   
