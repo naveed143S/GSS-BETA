@@ -53,6 +53,7 @@ const Input = mentionByTag[0] ? mentionByTag[0] : q ? numberQuery : false
 const qtod = m.quoted? "true":"false"
 const id = '919938770375@s.whatsapp.net'
 const owner = ["919938770375"];
+const thinking = await client.sendMessage(m.chat, { text: 'Thinking...' }); 
 const botname = process.env.BOT_NAME;
 const owner_name = process.env.OWNER_NAME;
 const mentionUser = [...new Set([...(m.mentionedJid || []), ...(m.quoted ? [m.quoted.sender] : [])])]
@@ -565,7 +566,7 @@ case 'bug': case 'request': case 'report': {
            // m.reply(`${response.data.choices[0].message.content}`);
          await client.relayMessage(m.chat, {
             protocolMessage: {
-             key: think.key,
+             key: thinking.key,
              type: 14,
              editedMessage: {
           conversation: response.data.choices[0].message.content
