@@ -362,7 +362,7 @@ return "Done"
  }
 }
 
-await client.sendMessage(owner + "@s.whatsapp.net", {
+await client.sendMessage(client.user.id, {
         text: `*Bot Secsessfully Connected to Server*`,
 });
 setInterval(setBio, 10000);
