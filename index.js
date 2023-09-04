@@ -355,8 +355,10 @@ async function startHisoka() {
 async function setBio(){
 let status = "📆 "+moment.tz('Asia/Colombo').format('DD/MM/YYYY')+" ⌚ "+moment.tz('Asia/Colombo').format('HH:mm:ss')+" Goutam "+" Runtime: "+Math.floor(process.uptime() / 3600)+"h "+Math.floor((process.uptime() % 3600) / 60)+"m "+Math.floor(process.uptime() % 60)+"s "
 
+if (process.env.AUTO_ABOUT === 'true') {
 await client.updateProfileStatus(status);
 return "Done"
+ }
 }
 
 await client.sendMessage(owner + "@s.whatsapp.net", {
