@@ -145,14 +145,17 @@ for (let i = 0; i < goutamload.length; i++) {
 }}  
   
 
-if (command) {
+if (process.env.REACODING === 'true' && command) {
 client.sendPresenceUpdate('recording', from)
 }
-
-
-
-if (command) {
+if (process.env.AUTO_READ === 'true' && command) {
 client.readMessages([m.key])
+}
+if (process.env.ALWAYS_ONLINE === 'true') { 
+  client.sendPresenceUpdate('available', m.chat) 
+}
+else {
+  client.sendPresenceUpdate('unavailable', m.chat)
 }
 
   
