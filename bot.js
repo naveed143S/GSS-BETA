@@ -8,6 +8,7 @@ require("dotenv").config();
   const fs = require("fs");  
   const util = require("util");  
   const chalk = require("chalk");  
+  const googleTTS = require("google-tts-api");
   const { Configuration, OpenAIApi } = require("openai");  
   const { DiscussServiceClient } = require("@google-ai/generativelanguage"); 
   const { GoogleAuth } = require("google-auth-library"); 
@@ -247,6 +248,9 @@ await client.sendMessage(m.chat, reactionMessage)
 ┆❏.apk 🅕 
 ┆❏.yts
 ╰–––––––––––––––༓ 
+╭––『 *Tools* 』ﾠ 
+┆❏.tts 🅕 
+╰–––––––––––––––༓ 
 ╭––『 *Downloader* 』 
 ┆❏  Comming Soon....
 ╰–––––––––––––––༓
@@ -385,7 +389,7 @@ if (!text) return m.reply(`Where is the name?\nExample: ${prefix + command} Gout
     }
 break;
 
-case 'insta': case 'apk': case 'yts': case 'sticker':
+case 'apk': case 'yts': case 'sticker':
   m.reply("This feature is Comming Soon");
 break;
 
@@ -393,67 +397,52 @@ break;
   
 
  
-                 case 'can': { 
+case 'say': case 'tts': case 'gtts':{
+if (!text) return m.reply('Where is the text?')
+            let texttts = text
+            const xeonrl = googleTTS.getAudioUrl(texttts, {
+                lang: "en",
+                slow: false,
+                host: "https://translate.google.com",
+            })
+            return client.sendMessage(m.chat, {
+                audio: {
+                    url: xeonrl,
+                },
+                mimetype: 'audio/mp4',
+                ptt: true,
+                fileName: `${text}.mp3`,
+            }, {
+                quoted: m,
+            })
+        }
+break; 
+
+case 'insta': case 'ig': {
+
+if (!args[0]) return m.reply(`Enter Instagram Username\n\nExample: ${prefix + command} world_reacode_egg`)
+
+const igs = require('api-dylux')
+    try {
+    let res = await igs.igStalk(args[0])
+    let te = `
+┌──「 *Information* 
+▢ *🔖Name:* ${res.name} 
+▢ *🔖Username:* ${res.username}
+▢ *👥Follower:* ${res.followersH}
+▢ *🫂Following:* ${res.followingH}
+▢ *📌Bio:* ${res.description}
+▢ *🏝️Posts:* ${res.postsH}
+▢ *🔗 Link* : https://instagram.com/${res.username.replace(/^@/, '')}
+└────────────`
+     await client.sendMessage(m.chat, {image: { url: res.profilePic }, caption: te }, {quoted: m})
+      } catch {
+        m.reply(`Make sure the username comes from *Instagram*`)
+      }
+}
+break;
   
-         if (!text) return m.reply(`Ask question\n\nExample : ${prefix + command} i dance?`) 
-  
-                     let bisa = [`Can`,`Can't`,`Cannot`,`Of Course You Can!!!`] 
-                 let keh = bisa[Math.floor(Math.random() * bisa.length)] 
-                 let jawab = `*Can ${text}*\nAnswer : ${keh}` 
-             await m.reply(jawab) 
-             } 
-             break; 
-             case 'is': { 
-         if (!text) return m.reply(`Ask question\n\nExample : ${prefix + command} she virgin?`) 
-         let apa = [`Yes`, `No`, `It Could Be`, `Thats right`] 
-                 let kah = apa[Math.floor(Math.random() * apa.length)] 
-                 let jawab = `*Is ${text}*\nAnswer : ${kah}`                 
-             await m.reply(jawab) 
-             } 
-             break; 
-             case 'when': { 
-                     if (!text) return m.reply(`Ask question\n\nExample : ${prefix + command} will i get married?`) 
-                     let kapan = ['5 More Days', '10 More Days', '15 More Days','20 More Days', '25 More Days','30 More Days','35 More Days','40 More Days','45 More Days','50 More Days','55 More Days','60 More Days','65 More Days','70 More Days','75 More Days','80 More Days','85 More Days','90 More Days','100 More Days','5 Months More', '10 Months More', '15 Months More','20 Months More', '25 Months More','30 Months More','35 Months More','40 Months More','45 Months More','50 Months More','55 Months More','60 Months More','65 Months More','70 Months More','75 Months More','80 Months More','85 Months More','90 Months More','100 Months More','1 More Year','2 More Years','3 More Years','4 More Years','5 More Years','Tomorrow','The Day After Tomorrow'] 
-                 let koh = kapan[Math.floor(Math.random() * kapan.length)] 
-                 let jawab = `*${command} ${text}*\nAnswer : ${koh}`                 
-             await m.reply(jawab) 
-             } 
-             break; 
- case 'what': { 
-                     if (!text) return m.reply(`Ask question\n\nExample : ${prefix + command} is your name?`) 
-                     let lel = [`Ask Your Gf`, `I Dont Know`, `I Don't Know, Ask Your Father`] 
-                 let kah = lel[Math.floor(Math.random() * lel.length)] 
-                 let jawab = `*What ${text}*\nAnswer : ${kah}`                 
-             await m.reply(jawab) 
-             } 
-             break; 
- case 'where': { 
- if (!text) return m.reply(`Ask question\n\nExample : ${prefix + command} is your name?`) 
-                     let wherelol = [`In the mountain`, `On mars`, `On moon`,`In the jungle`,`I dont know ask your mom`,`It could be somewhere`] 
-                 let kah = wherelol[Math.floor(Math.random() * wherelol.length)] 
-                 let jawab = `*Whwre ${text}*\nAnswer : ${kah}`               
-             await m.reply(jawab) 
-             } 
-             break; 
- case 'how': { 
-                     if (!text) return m.reply(`Ask question\n\nExample : ${prefix + command} to date girl?`) 
-                     let gimana = [`Ummm...`, `It's Difficult Bro`, `Sorry Bot Can't Answer`, `Try Searching On Google`,`Holy Cow! Really???`,`Dizzy Ah😴, don't wanna answer`,`Ohhh I See:(`,`The Patient, Boss:(`,`Really dude 🙄`] 
-                 let kah = gimana[Math.floor(Math.random() * gimana.length)] 
-                 let jawab = `*How ${text}*\nAnswer : ${kah}`                 
-             await m.reply(jawab) 
-             } 
-             break; 
- case 'rate': { 
-                     if (!text) return m.reply(`Example : ${prefix + command} my profile`) 
-                     let ra = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','52','53','54','55','56','57','58','59','60','61','62','63','64','65','66','67','68','69','70','71','72','73','74','75','76','77','78','79','80','81','82','83','84','85','86','87','88','89','90','91','92','93','94','95','96','97','98','99','100'] 
-                 let kah = ra[Math.floor(Math.random() * ra.length)] 
-                 let jawab = `*Rate ${text}*\nAnswer : ${kah}%`                 
-             await m.reply(jawab) 
-             } 
-             break; 
-  
-  
- case "dall": 
+ case "img": 
    await loading()
    if (!text) throw `*This command generates image from texts*\n\n*𝙴xample usage*\n*◉ ${prefix + command} Beautiful animegirl*\n*◉ ${prefix + command} elon musk in pink output*`;  
   
@@ -586,7 +575,7 @@ case "ai": case "gpt":
           }  
             break;  
   
-          case "img": case "ai-img": case "image": case "images":  
+          case "dall": case "ai-img": case "image": case "dalle":  
             if (!text) throw `*This command generates image with Dall-E*\n\n*𝙴xample usage*\n*◉ ${prefix + command} Beautiful animegirl*\n*◉ ${prefix + command} elon musk in pink output*`;  
   
     try {  
