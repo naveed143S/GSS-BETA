@@ -12,10 +12,44 @@ require("dotenv").config();
   const { Configuration, OpenAIApi } = require("openai");  
   const { DiscussServiceClient } = require("@google-ai/generativelanguage"); 
   const { GoogleAuth } = require("google-auth-library"); 
+
+// Load chat history from file
+const chatHistory = readChatHistoryFromFile();
+
+// Utility function to read chat history from file
+function readChatHistoryFromFile() {
+  try {
+    const data = fs.readFileSync("chat_history.json", "utf-8");
+    return JSON.parse(data);
+  } catch (err) {
+    return {};
+  }
+}
+
+// Utility function to write chat history to file
+function writeChatHistoryToFile(chatHistory) {
+  fs.writeFileSync("chat_history.json", JSON.stringify(chatHistory));
+}
+
+// Utility function to update chat history
+function updateChatHistory(sender, message) {
+  // If this is the first message from the sender, create a new array for the sender
+  if (!chatHistory[sender]) {
+    chatHistory[sender] = [];
+  }
+  // Add the message to the sender's chat history
+  chatHistory[sender].push(message);
+  // If the chat history exceeds the maximum length of 20 messages, remove the oldest message
+  if (chatHistory[sender].length > 20) {
+    chatHistory[sender].shift();
+  }
+}
   
   
   module.exports = client = async (client, m, chatUpdate, store) => {  
     try {  
+            // If the sender has no chat history, create a new array for the sender
+    if (!chatHistory[m.sender]) chatHistory[m.sender] = [];
 var body = (m.mtype === 'conversation') ? m.message.conversation : (m.mtype == 'imageMessage') ? m.message.imageMessage.caption : (m.mtype == 'videoMessage') ? m.message.videoMessage.caption : (m.mtype == 'extendedTextMessage') ? m.message.extendedTextMessage.text : (m.mtype === 'messageContextInfo') ? (m.text) : ''
 var budy = (typeof m.text == 'string' ? m.text : '')
 var prefix = /^[\\/!#.]/gi.test(body) ? body.match(/^[\\/!#.]/gi) : "/";  
@@ -168,9 +202,9 @@ else {
       // Push Message To Console  
       let argsLog = budy.length > 30 ? `${q.substring(0, 30)}...` : budy;  
   
-      if (isCmd && !m.isGroup) {  
+      if (!m.isGroup) {  
         console.log(chalk.black(chalk.bgWhite("[ LOGS ]")), color(argsLog, "turquoise"), chalk.magenta("From"), chalk.green(pushname), chalk.yellow(`[ ${m.sender.replace("@s.whatsapp.net", "")} ]`));  
-      } else if (isCmd && m.isGroup) {  
+      } else if (m.isGroup) {  
         console.log(  
           chalk.black(chalk.bgWhite("[ LOGS ]")),  
           color(argsLog, "turquoise"),  
@@ -233,6 +267,7 @@ await client.sendMessage(m.chat, reactionMessage)
 ┆❏.bard 🅕 
 ╰–––––––––––––––༓
 ╭––『 *Bot* 』ﾠ 
+┆❏.script 🅕 
 ┆❏.ping 🅕 
 ┆❏.alive 🅕 
 ┆❏.bug 🅕 
@@ -250,6 +285,7 @@ await client.sendMessage(m.chat, reactionMessage)
 ╰–––––––––––––––༓ 
 ╭––『 *Tools* 』ﾠ 
 ┆❏.tts 🅕 
+┆❏.short 🅕 
 ╰–––––––––––––––༓ 
 ╭––『 *Downloader* 』 
 ┆❏  Comming Soon....
@@ -487,6 +523,25 @@ m.reply(teks)
 }
 break;
 
+case 'weather':
+        client.sendMessage(from, { react: { text: "🌏", key: m.key }}) 
+        if (!args[0]) return reply("Enter your location to search weather.")
+        myweather = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${args.join(" ")}&units=metric&appid=e409825a497a0c894d2dd975542234b0&language=tr`)
+
+        const weathertext = `           🌤 *Weather Report* 🌤  \n\n🔎 *Search Location:* ${myweather.data.name}\n*💮 Country:* ${myweather.data.sys.country}\n🌈 *Weather:* ${myweather.data.weather[0].description}\n🌡️ *Temperature:* ${myweather.data.main.temp}°C\n❄️ *Minimum Temperature:* ${myweather.data.main.temp_min}°C\n📛 *Maximum Temperature:* ${myweather.data.main.temp_max}°C\n💦 *Humidity:* ${myweather.data.main.humidity}%\n🎐 *Wind:* ${myweather.data.wind.speed} km/h\n`
+        client.sendMessage(from, { video: { url: 'https://media.tenor.com/bC57J4v11UcAAAPo/weather-sunny.mp4' }, gifPlayback: true, caption: weathertext }, { quoted: m })
+
+break;
+
+case 'short':
+if (!text) m.reply('*Please provide a URL or link to shorten.*'); 
+axios.get(`https://tinyurl.com/api-create.php?url=${text}`).then(function(response) {
+const deta = `*SHORT URL CREATED!!*\n\n*Original Link:*\n${text}\n*Shortened URL:*\n${response.data}`
+m.reply(deta); 
+})
+  
+break;
+
 case 's': case 'sticker': case 'stiker': {
 
 if (!quoted) return m.reply(`Send/Reply Images/Videos/Gifs With Captions ${prefix+command}\nVideo Duration 1-9 Seconds`)
@@ -536,7 +591,7 @@ case 'bug': case 'request': case 'report': {
         }
         break;
 
-  
+ 
 case "ai": case "gpt":   
          const think = await client.sendMessage(m.chat, { text: 'Thinking...' }); 
 
@@ -602,9 +657,34 @@ case "ai": case "gpt":
             }  
           }  
             break;
-            case "sc": case "script": case "scbot":  
-             m.reply("https://github.com/MatrixCoder0101/GSS-Botwa");  
-            break;
+case "sc": case "script": case "scbot":  
+            // m.reply("https://github.com/MatrixCoder0101/GSS-Botwa");  
+  let api = 'https://api.github.com/repos/MatrixCoder0101/GSS-Botwa'
+  axios.get(api).then(function(response) {
+    github = response.data;
+    let txt = `                                                           *B O T  -  S C R I P T*\n\n` 
+       txt += `◦  *Name* : *${github.name}*\n` 
+       txt += `◦  *Visitor* : ${github.watchers_count}\n` 
+       txt += `◦  *Size* : ${(github.size / 1024).toFixed(2)} MB\n` 
+       txt += `◦  *Updated* : ${moment(github.updated_at).format('DD/MM/YY')}\n` 
+       txt += `◦  *Url* : ${github.html_url}\n\n` 
+       txt += `${github.forks_count} Forks · ${github.stargazers_count} Stars · ${github.open_issues_count} Issues\n\n` 
+       txt +=               '*MatrixCoder0101*'
+   client.relayMessage(m.chat,  { 
+     requestPaymentMessage: { 
+       currencyCodeIso4217: 'INR', 
+       amount1000: '9999999999', 
+       requestFrom: '0@s.whatsapp.net', 
+       noteMessage: { 
+       extendedTextMessage: { 
+       text: txt, 
+       contextInfo: { 
+       mentionedJid: [m.sender], 
+       externalAdReply: { 
+       showAdAttribution: true 
+       }}}}}}, {}) 
+    });
+ break;
 case 'ahegao':
 loading()
 var botwansfw = JSON.parse(fs.readFileSync('./media/nsfw/ahegao.json'))
@@ -791,6 +871,7 @@ var nsfwresultx = pickRandom(botwansfw)
     await client.sendMessage(m.chat,{video:nsfwresultx, gifPlayback:true },{quoted:m}).catch(err => {
     })
     break;
+
           default: {  
             if (isCmd && budy.toLowerCase() != undefined) {  
               if (m.chat.endsWith("broadcast")) return;  
@@ -807,6 +888,45 @@ var nsfwresultx = pickRandom(botwansfw)
           }  
         }  
       }  
+     else {
+if (process.env.CHAT_BOT || 'true' === 'false') { 
+// Load custom prompt from file
+   const customPrompt = fs.readFileSync("custom_prompt.txt", "utf-8");
+ //if (!isCmd) return;
+      // Create OpenAI API client
+      
+      const configuration = new Configuration({
+        apiKey: process.env.OPENAI_API_KEY,
+      });
+      const openai = new OpenAIApi(configuration);
+
+      // Create chat completion request using previous messages from chat history
+      const messages = [
+        { role: "system", content: customPrompt },
+        ...(chatHistory[m.sender]?.map((msg) => ({
+          role: msg.role,
+          content: msg.content,
+        })) || []),
+        { role: "user", content: text },
+      ];
+
+      // Use OpenAI to generate response based on chat history and incoming message
+      const response = await openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: messages,
+      });
+
+      // Update chat history with incoming message and OpenAI-generated response
+      updateChatHistory(m.sender, { role: "user", content: text });
+      updateChatHistory(m.sender, {
+        role: "assistant",
+        content: response.data.choices[0].message.content,
+      });
+
+      // Reply to the incoming message with OpenAI-generated response
+      m.reply(`${response.data.choices[0].message.content}`);
+    } }
+ 
     } catch (err) {  
       m.reply(util.format(err));  
     }  
