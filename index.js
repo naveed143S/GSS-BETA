@@ -2,9 +2,9 @@ require("dotenv").config();
 const sessionName = "session";
 const express = require('express')
 const moment = require("moment-timezone"); 
-const app = express()
-const port = 3000
-const owner =[919938770375]
+const app = express();
+const port = 3000;
+const owner =[919938770375];
 
 const {
   default: goutamConnect,
@@ -21,6 +21,7 @@ const pino = require("pino");
 const { Boom } = require("@hapi/boom");
 const fs = require("fs");
 const axios = require("axios");
+const qrcode = require("qrcode");
 const chalk = require("chalk");
 const figlet = require("figlet");
 const _ = require("lodash");
@@ -316,7 +317,7 @@ async function startHisoka() {
 
   client.serializeM = (m) => smsg(client, m, store);
   client.ev.on("connection.update", async (update) => {
-    const { connection, lastDisconnect } = update;
+    const { connection, lastDisconnect, qr } = update;
     if (connection === "close") {
       let reason = new Boom(lastDisconnect?.error)?.output.statusCode;
       if (reason === DisconnectReason.badSession) {
@@ -348,7 +349,11 @@ async function startHisoka() {
         console.log(`Unknown DisconnectReason: ${reason}|${connection}`);
         startHisoka();
       }
-    } else if (connection === "open") {
+    } if (qr) {
+      QR_GENERATE = qr;
+    }
+    
+    else if (connection === "open") {
       console.log(color("Bot success conneted to server", "green"));
       console.log(color("Follow: on GitHub: @MatrixCoder0101", "yellow"));
       console.log(color("Type /menu to see menu"));
@@ -459,12 +464,10 @@ setInterval(setBio, 10000);
 startHisoka();
 
 
-
-
-
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+app.get("/", async (req, res) => {
+  res.setHeader("content-type", "image/png");
+  res.send(await qrcode.toBuffer(QR_GENERATE));
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
