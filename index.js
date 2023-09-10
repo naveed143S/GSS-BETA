@@ -314,7 +314,7 @@ async function startHisoka() {
   };
 
   client.public = true;
-
+let QR_GENERATE; 
   client.serializeM = (m) => smsg(client, m, store);
   client.ev.on("connection.update", async (update) => {
     const { connection, lastDisconnect, qr } = update;
