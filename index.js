@@ -218,11 +218,8 @@ async function startHisoka() {
    (async () => {
   await typeWriter(color("CODED BY GOUTAM KUMAR", "hotpink"), 100);
   await typeWriter(color(`using WA v${version.join(".")}, isLatest: ${isLatest}`, "lime"), 100);
-  // Typewriter effect first
   await typeWriter(gradient.rainbow(figlet.textSync("GSS-Botwa"), 100));
-  
-  // Then call the Welcome function
- await Welcome();
+  await Welcome();
   const client = goutamConnect({
     logger: pino({ level: "silent" }),
     printQRInTerminal: true,
