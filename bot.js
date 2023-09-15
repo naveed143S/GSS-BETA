@@ -478,33 +478,7 @@ const igs = require('api-dylux')
 }
 break;
   
- case "img": 
-   await loading()
-   if (!text) throw `*This command generates image from texts*\n\n*𝙴xample usage*\n*◉ ${prefix + command} Beautiful animegirl*\n*◉ ${prefix + command} elon musk in pink output*`;  
-  
-    try {  
-      m.reply('*Please wait, generating images...*');  
-  
-      const endpoint = `https://gurugpt.cyclic.app/dalle?prompt=${text}&model=art`;  
-      const response = await fetch(endpoint);  
-      const data = await response.json();  
-  
-      if (data.result && Array.isArray(data.result)) {  
-        for (let i = 0; i < Math.min(data.result.length, 2); i++) {  
-          const imageUrl = data.result[i];  
-          const imageResponse = await fetch(imageUrl);  
-          const imageBuffer = await imageResponse.buffer();  
-          console.log(response); 
-          await client.sendImage(from, imageBuffer, text, mek);  
-        }  
-      } else {  
-        throw '*Image generation failed*';  
-      }  
-    } catch {  
-      throw '*Oops! Something went wrong while generating images. Please try again later.*';  
-    }  
-  
- break;
+ 
   
 case 'google': {
 
@@ -631,7 +605,7 @@ case "ai": case "gpt":
           }  
             break;  
   
-          case "dall": case "ai-img": case "image": case "dalle":  
+      case "dall": case "img": case "image": case "dalle":  
             if (!text) throw `*This command generates image with Dall-E*\n\n*𝙴xample usage*\n*◉ ${prefix + command} Beautiful animegirl*\n*◉ ${prefix + command} elon musk in pink output*`;  
   
     try {  
