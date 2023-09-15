@@ -23,6 +23,8 @@ const fs = require("fs");
 const axios = require("axios");
 const qrcode = require("qrcode");
 const chalk = require("chalk");
+const chalkAnimation = require("chalk-animation");
+const gradient = require('gradient-string');
 const figlet = require("figlet");
 const _ = require("lodash");
 const PhoneNumber = require("awesome-phonenumber");
@@ -34,7 +36,37 @@ const store = makeInMemoryStore({
 const color = (text, color) => {
   return !color ? chalk.green(text) : chalk.keyword(color)(text);
 };
+async function Welcome() {
+  let load = "Generating QR Code Please Wait..."
+  let title = chalkAnimation.rainbow(load)
+  setInterval(() => {
+    title.replace(load += '.');
+  }, 1000);
+  await new Promise((resolve) => {
+    setTimeout(resolve, 5000);
+  });
 
+  title.stop();
+}
+
+function typeWriter(text, speed) {
+  return new Promise((resolve) => {
+    let i = 0;
+
+    function type() {
+      if (i < text.length) {
+        process.stdout.write(text.charAt(i));
+        i++;
+        setTimeout(type, speed);
+      } else {
+        console.log(); // To add a newline after typing
+        resolve();     // Resolve the promise when typing is done
+      }
+    }
+
+    type();
+  });
+}
 function smsg(conn, m, store) {
   if (!m) return m;
   let M = proto.WebMessageInfo;
@@ -183,19 +215,14 @@ async function startHisoka() {
     `./${sessionName ? sessionName : "session"}`
   );
   const { version, isLatest } = await fetchLatestBaileysVersion();
-  console.log(`using WA v${version.join(".")}, isLatest: ${isLatest}`);
-  console.log(
-    color(
-      figlet.textSync("GSS-Botwa", {
-        font: "Standard",
-        horizontalLayout: "default",
-        vertivalLayout: "default",
-        whitespaceBreak: false,
-      }),
-      "green"
-    )
-  );
-
+   (async () => {
+  await typeWriter(color("CODED BY GOUTAM KUMAR", "hotpink"), 100);
+  await typeWriter(color(`using WA v${version.join(".")}, isLatest: ${isLatest}`, "lime"), 100);
+  // Typewriter effect first
+  await typeWriter(gradient.rainbow(figlet.textSync("GSS-Botwa"), 100));
+  
+  // Then call the Welcome function
+ await Welcome();
   const client = goutamConnect({
     logger: pino({ level: "silent" }),
     printQRInTerminal: true,
@@ -459,7 +486,7 @@ setInterval(setBio, 10000);
   };
 
   return client;
-}
+})()};
 
 startHisoka();
 
