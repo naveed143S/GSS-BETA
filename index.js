@@ -16,7 +16,7 @@ const {
   downloadMediaMessage,
   proto,
   getContentType,
-} = require("@adiwajshing/baileys");
+} = require("@whiskeysockets/baileys");
 const pino = require("pino");
 const { Boom } = require("@hapi/boom");
 const fs = require("fs");
@@ -497,7 +497,7 @@ app.get("/", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`app listening on port ${port}`)
 })
 
 let file = require.resolve(__filename);
