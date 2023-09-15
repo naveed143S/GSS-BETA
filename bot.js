@@ -553,7 +553,8 @@ let encmedia = await client.sendImageAsSticker(m.chat, media, m, { packname: glo
 } else if (/video/.test(mime)) {
 if ((quoted.msg || quoted).seconds > 11) return m.reply('Send/Reply Images/Videos/Gifs With Captions ${prefix+command}\nVideo Duration 1-9 Seconds')
 let media = await quoted.download()
-let encmedia = await client.sendVideoAsSticker(m.chat, media, m, { packname: global.packname, author: global.author })
+let encmedia = await client.sendVideoAsSticker(m.chat, media, m, { packname:
+'GSS', author: 'Goutam' })
 
 } else {
 m.reply(`Send/Reply Images/Videos/Gifs With Captions ${prefix+command}\nVideo Duration 1-9 Seconds`)
@@ -862,15 +863,7 @@ loading()
     })
     break;
 
-case 'gifhentai':
-//if (!m.isGroup) return m.reply("only work in group");
-//if xufufzitx
-loading()
-var botwansfw = JSON.parse(fs.readFileSync('./media/nsfw/gifs.json'))
-var nsfwresultx = pickRandom(botwansfw)
-    await client.sendMessage(m.chat,{video:nsfwresultx, gifPlayback:true },{quoted:m}).catch(err => {
-    })
-    break;
+
 
           default: {  
             if (isCmd && budy.toLowerCase() != undefined) {  
