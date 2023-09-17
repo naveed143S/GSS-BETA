@@ -6,7 +6,7 @@
     "baileys",
     "whatsapp-api"
   ],
-  "repository": "https://github.com/MatrixCoder0101",
+  "repository": "https://github.com/MatrixCoder0101/GSS-Botwa",
   "stack": "container",
   "env": {
       "BOT_NAME": {
