@@ -579,49 +579,40 @@ module.exports = client = async (client, m, chatUpdate, store) => {
           }
           break;
 
-        case "yts":
-        case "ytsearch": {
-          if (!args.join(" ")) {
-            return client.sendMessage(from, `Example: -yts Heat waves`, m.id); // Fix message sending
-          }
+case 'yts':
+case 'ytsearch': {
+    if (!args.join(" ")) {
+        return client.sendMessage(from, `Example: -yts Heat waves`, m.id); // Fix message sending
+    }
 
-          const yts = require("youtube-yts");
+    
 
-          try {
-            const search = await yts(args.join(" "));
-            const text = args.join(" ");
-            let teks = `**YouTube Search Results for: ${text}**\n\n`;
+    try {
+        const search = await yts(args.join(" "));
+        const text = args.join(" ");
+        let teks = `**YouTube Search Results for: ${text}**\n\n`;
 
-            if (search.all.length === 0) {
-              teks += "No results found for the given search query.";
-            } else {
-              search.all.forEach((result, index) => {
-                teks +=
-                  `**Result No: ${index + 1}**\n\n` +
-                  `**Title:** ${result.title}\n` +
-                  `**Views:** ${result.views}\n` +
-                  `**Duration:** ${result.timestamp}\n` +
-                  `**Uploaded:** ${result.ago}\n` +
-                  `**Author:** ${result.author.name}\n` +
-                  `**URL:** ${result.url}\n\n`;
-              });
-            }
-
-            // Send the results in a more readable format
-            client.sendMessage(
-              from,
-              { image: { url: search.all[0].thumbnail }, caption: teks },
-              m
-            );
-          } catch (error) {
-            console.error("Error searching YouTube:", error);
-            client.sendMessage(
-              from,
-              "An error occurred while searching YouTube."
-            );
-          }
-          break;
+        if (search.all.length === 0) {
+            teks += "No results found for the given search query.";
+        } else {
+            search.all.forEach((result, index) => {
+                teks += `**Result No: ${index + 1}**\n\n` +
+                    `**Title:** ${result.title}\n` +
+                    `**Views:** ${result.views}\n` +
+                    `**Duration:** ${result.timestamp}\n` +
+                    `**Uploaded:** ${result.ago}\n` +
+                    `**Author:** ${result.author.name}\n` +
+                    `**URL:** ${result.url}\n\n`;
+            });
         }
+
+        // Send the results in a more readable format
+        client.sendMessage(from, { image: { url: search.all[0].thumbnail }, caption: teks }, m);
+    } catch (error) {
+        console.error("Error searching YouTube:", error);
+        client.sendMessage(from, "An error occurred while searching YouTube.");
+    }}
+    break;
 
         case "fb": {
           if (!args[0]) {
