@@ -9,6 +9,7 @@ const owner =[919938770375];
 const {
   default: goutamConnect,
   useMultiFileAuthState,
+  Browsers,
   DisconnectReason,
   fetchLatestBaileysVersion,
   makeInMemoryStore,
@@ -223,7 +224,9 @@ async function startHisoka() {
   const client = goutamConnect({
     logger: pino({ level: "silent" }),
     printQRInTerminal: true,
-    browser: ["ChatGPT: WhatsApp - BOT", "Firefox", "5.1.7"],
+    // can use Windows, Ubuntu here too
+    browser: Browsers.macOS('Desktop'),
+    syncFullHistory: true,
     auth: state,
   });
 
