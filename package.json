@@ -22,7 +22,9 @@
   "author": "Goutam Kumar",
   "license": "MIT",
   "dependencies": {
+    "@adiwajshing/baileys": "^5.0.0",
     "@adiwajshing/keyed-db": "^0.2.4",
+    "@distube/ytdl-core": "^4.13.0",
     "@google-ai/generativelanguage": "^1.0.0",
     "@hapi/boom": "^10.0.0",
     "@whiskeysockets/baileys": "^6.4.1",
@@ -51,7 +53,9 @@
     "pino": "^7.0.5",
     "qrcode": "^1.5.3",
     "qrcode-terminal": "^0.12.0",
-    "util": "^0.12.4"
+    "stream": "^0.0.2",
+    "util": "^0.12.4",
+    "youtube-yts": "^2.0.0"
   },
   "directories": {
     "lib": "lib",
