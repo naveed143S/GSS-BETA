@@ -494,7 +494,49 @@ module.exports = client = async (client, m, chatUpdate, store) => {
             m.reply(`Bot Name Sucsessfully changed 2 ${text}`);
           }
           break;
+function isUrl(str) { 
+ } 
 
+case 'git':
+case 'gitclone':
+  if (!args[0]) return reply(`Where is the link?\nExample :\n${prefix}${command} https://github.com/MatrixCoder0101/GSS-Botwa`);
+  if (!isUrl(args[0]) && !args[0].includes('github.com')) return m.reply(`Link invalid!!`);
+  let regex1 = /(?:https|git)(?::\/\/|@)github\.com[\/:]([^\/:]+)\/(.+)/i;
+  let [, user, repo] = args[0].match(regex1) || [];
+  repo = repo.replace(/.git$/, '');
+  let gitUrl = `https://api.github.com/repos/${user}/${repo}/zipball`;
+
+  // Use Axios to send a HEAD request and get the content-disposition header
+  axios.head(gitUrl)
+    .then(response => {
+      let filename = response.headers['content-disposition'].match(/attachment; filename=(.*)/)[1];
+      
+      // Send the document using Axios
+      axios({
+        method: 'get',
+        url: gitUrl,
+        responseType: 'stream', // Set the response type to stream
+      })
+      .then(response => {
+        // Handle the response data and send it as a document
+        client.sendMessage(m.chat, {
+          document: { url: gitUrl, data: response.data }, // Use response.data as the document data
+          fileName: filename + '.zip',
+          mimetype: 'application/zip'
+        }, { quoted: m });
+      })
+      .catch(err => {
+        console.error(err);
+        reply(mess.error);
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      reply(mess.error);
+    });
+  break;
+
+  
         case "apk":
         case "sticker":
           m.reply("This feature is Comming Soon");
